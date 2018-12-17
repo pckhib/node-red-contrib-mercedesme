@@ -1,0 +1,12 @@
+{
+  "name": "node-red-contrib-mercedesme",
+  "version": "0.1.0",
+  "repository": "https://github.com/pckhib/node-red-contrib-mercedesme.git",
+  "author": "Patrick Hieber <patrickhieber92@gmail.com>",
+  "license": "MIT",
+  "node-red": {
+    "nodes": {
+      "mercedes-me": "mercedes-me.js"
+    }
+  }
+}
