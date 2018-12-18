@@ -8,5 +8,8 @@
     "nodes": {
       "mercedes-me": "mercedes-me.js"
     }
+  },
+  "dependencies": {
+    "mercedes-me-connect-js": "^0.1.0"
   }
 }
