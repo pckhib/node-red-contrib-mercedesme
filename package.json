@@ -6,10 +6,11 @@
   "license": "MIT",
   "node-red": {
     "nodes": {
-      "mercedes-me": "mercedes-me.js"
+      "mercedes-me-auth": "src/mercedes-me-auth.js"
     }
   },
   "dependencies": {
-    "mercedes-me-connect-js": "^0.1.0"
+    "request": "^2.88.0",
+    "swagger-client": "^3.8.22"
   }
 }
