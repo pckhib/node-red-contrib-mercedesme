@@ -31,6 +31,7 @@ module.exports = function (RED) {
 
             return auth.tokenHost + auth.authorizePath + 
                 '?client_id=' + client_id + 
+                '&scope=mb:vehicle:status:general%20mb:user:pool:reader' +
                 '&response_type=code&redirect_uri=' + callbackUrl;
         };
 
