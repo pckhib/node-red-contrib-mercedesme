@@ -1,0 +1,882 @@
+{
+	"swagger": "2.0",
+	"x-default-token": "a1b2c3d4-a1b2-a1b2-a1b2-a1b2c3d4e5f6",
+  "info": {
+    "title": "Experimental Connected Vehicle API",
+    "version": "1.0",
+    "description": "An experimental Connected Vehicle API that allows to request vehicle data and to send commands to the virtual car simulator.",
+    "contact": {
+      "name": "The open API platform by Mercedes-Benz"
+    }
+  },
+  "host": "api.mercedes-benz.com",
+  "basePath": "/experimental/connectedvehicle/v1",
+  "schemes": [
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "tags": [
+    {
+      "name": "Vehicles",
+      "description": "Provides information about vehicles."
+    },
+    {
+      "name": "Tires",
+      "description": "Provides information about the tire pressure."
+    },
+    {
+      "name": "Doors",
+      "description": "Provides information about the doors status."
+    },
+    {
+      "name": "Location",
+      "description": "Provides location information about vehicle."
+    },
+    {
+      "name": "Odometer",
+      "description": "Provides odometer specific information."
+    },
+    {
+      "name": "Fuel",
+      "description": "Provides fuel specific information."
+    },
+    {
+      "name": "State of Charge",
+      "description": "Provides charge status of the battery pack."
+    }
+  ],
+  "paths": {
+    "/vehicles": {
+      "x-swagger-router-controller": "vehicles",
+      "get": {
+        "summary": "Find all vehicles.",
+        "description": "List all of the user's vehicles.",
+        "operationId": "getAllVehicles",
+        "tags": [
+          "Vehicles"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "A list with user's vehicles.",
+            "schema": {
+              "$ref": "#/definitions/Vehicles"
+            }
+          },
+          "204": {
+            "description": "No content found. There are any vehicles for the user."
+          },
+          "401": {
+            "description": "Invalid or missing authorization in header."
+          },
+          "403": {
+            "description": "Insufficient permission.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/vehicles/{vehicleId}": {
+      "x-swagger-router-controller": "vehicles",
+      "get": {
+        "summary": "Get vehicle by ID.",
+        "description": "Returns detailed information about the vehicle like its licensplate, sales designation or its FIN or VIN.",
+        "operationId": "getVehicleById",
+        "tags": [
+          "Vehicles"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/vehicleIdParam"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Detailed information about the vehicle.",
+            "schema": {
+              "$ref": "#/definitions/VehicleDetail"
+            }
+          },
+          "400": {
+            "description": "Bad Request. Invalid Input e.g wrong token. See error message for further details.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "401": {
+            "description": "Invalid or missing authorization in header."
+          },
+          "403": {
+            "description": "Insufficient permission."
+          },
+          "404": {
+            "description": "Resource not found. The requested vehicle can not be found."
+          },
+          "408": {
+            "description": "Car is not available because the simulator is not connected."
+          }
+        }
+      }
+    },
+    "/vehicles/{vehicleId}/tires": {
+      "x-swagger-router-controller": "tires",
+      "get": {
+        "description": "Get pressure of all tires of the vehicle.",
+        "operationId": "getTiresStatus",
+        "tags": [
+          "Tires"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/vehicleIdParam"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Information about the tire pressure of all tires of the vehicle.",
+            "schema": {
+              "$ref": "#/definitions/Tires"
+            }
+          },
+          "400": {
+            "description": "Bad Request. Invalid Input e.g wrong token. See error message for further details.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "401": {
+            "description": "Invalid or missing authorization in header."
+          },
+          "403": {
+            "description": "Insufficient permission."
+          },
+          "404": {
+            "description": "Resource not found. The requested vehicle can not be found."
+          },
+          "408": {
+            "description": "Car is not available because the simulator is not connected."
+          }
+        }
+      }
+    },
+    "/vehicles/{vehicleId}/doors": {
+      "x-swagger-router-controller": "doors",
+      "get": {
+        "summary": "Get the status of all doors of the vehicle.",
+        "description": "Returns status of all doors of the vehicle. It informs about each door if it is locked, unlocked, open or closed.",
+        "operationId": "getDoorsStatus",
+        "tags": [
+          "Doors"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/vehicleIdParam"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Status of each door of the vehicle which tells if it is locked, unlocked, open or closed.",
+            "schema": {
+              "$ref": "#/definitions/Doors"
+            }
+          },
+          "400": {
+            "description": "Bad Request. Invalid Input e.g wrong token. See error message for further details.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "401": {
+            "description": "Invalid or missing authorization in header."
+          },
+          "403": {
+            "description": "Insufficient permission."
+          },
+          "404": {
+            "description": "Resource not found. The requested vehicle can not be found."
+          },
+          "408": {
+            "description": "Car is not available because the simulator is not connected."
+          }
+        }
+      },
+      "post": {
+        "operationId": "postDoors",
+        "description": "Locks or unlocks all doors of the vehicle.",
+        "summary": "Locks or unlocks all doors of the vehicle.",
+        "tags": [
+          "Doors"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/vehicleIdParam"
+          },
+          {
+            "$ref": "#/parameters/doorLockChangeRequestBody"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Changing door lock status was initiated.",
+            "schema": {
+              "$ref": "#/definitions/DoorLockChangedStatus"
+            }
+          },
+          "400": {
+            "description": "Bad Request. Invalid Input e.g wrong token. See error message for further details.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "401": {
+            "description": "Invalid or missing authorization in header."
+          },
+          "403": {
+            "description": "Insufficient permission."
+          },
+          "404": {
+            "description": "Resource not found. The requested vehicle or command can not be found."
+          },
+          "408": {
+            "description": "Car is not available because the simulator is not connected."
+          }
+        }
+      }
+    },
+    "/vehicles/{vehicleId}/location": {
+      "x-swagger-router-controller": "location",
+      "get": {
+        "summary": "Retrieves the current location of the vehicle.",
+        "description": "Returns the current location and the heading of the vehicle.",
+        "operationId": "getLocation",
+        "tags": [
+          "Location"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/vehicleIdParam"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Current location and heading of the vehicle.",
+            "schema": {
+              "$ref": "#/definitions/Location"
+            }
+          },
+          "400": {
+            "description": "Bad Request. Invalid Input e.g wrong token. See error message for further details.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "401": {
+            "description": "Invalid or missing authorization in header."
+          },
+          "403": {
+            "description": "Insufficient permission."
+          },
+          "404": {
+            "description": "Resource not found. The requested vehicle or command can not be found."
+          },
+          "408": {
+            "description": "Car is not available because the simulator is not connected."
+          }
+        }
+      }
+    },
+    "/vehicles/{vehicleId}/odometer": {
+      "x-swagger-router-controller": "odometer",
+      "get": {
+        "summary": "Provides information about the odometer.",
+        "description": "Provides information about the odometer like milage aka odometer, distance driven since reset, distance driven since the enige start.",
+        "operationId": "getOdometerStatus",
+        "tags": [
+          "Odometer"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/vehicleIdParam"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Information about the odometer like milage aka odometer, distance driven since reset, distance driven since the enige start.",
+            "schema": {
+              "$ref": "#/definitions/DistanceDrivenResponse"
+            }
+          },
+          "400": {
+            "description": "Bad Request. Invalid Input e.g wrong token. See error message for further details.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "401": {
+            "description": "Invalid or missing authorization in header"
+          },
+          "403": {
+            "description": "Insufficient permission"
+          },
+          "404": {
+            "description": "Resource not found. The requested vehicle or command can not be found."
+          },
+          "408": {
+            "description": "Car is not available because the simulator is not connected."
+          }
+        }
+      }
+    },
+    "/vehicles/{vehicleId}/fuel": {
+      "x-swagger-router-controller": "fuel",
+      "get": {
+        "summary": "Returns the current fuel level.",
+        "description": "Provides information about the current fuel level.",
+        "operationId": "getFuelLevel",
+        "tags": [
+          "Fuel"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/vehicleIdParam"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The current fuel level.",
+            "schema": {
+              "$ref": "#/definitions/FuelLevel"
+            }
+          },
+          "400": {
+            "description": "Bad Request. Invalid Input e.g wrong token. See error message for further details.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "401": {
+            "description": "Invalid or missing authorization in header."
+          },
+          "403": {
+            "description": "Insufficient permission."
+          },
+          "404": {
+            "description": "Resource not found. The requested vehicle or command can not be found."
+          },
+          "408": {
+            "description": "Car is not available because the simulator is not connected."
+          }
+        }
+      }
+    },
+    "/vehicles/{vehicleId}/stateofcharge": {
+      "x-swagger-router-controller": "stateofcharge",
+      "get": {
+        "summary": "Provides the current status of the battery pack.",
+        "description": "Provides the current status of the battery pack.",
+        "operationId": "getStateOfCharge",
+        "tags": [
+          "State of Charge"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/vehicleIdParam"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The current status of the battery pack.",
+            "schema": {
+              "$ref": "#/definitions/StateOfCharge"
+            }
+          },
+          "400": {
+            "description": "Bad Request. Invalid Input e.g wrong token. See error message for further details.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "401": {
+            "description": "Invalid or missing authorization in header."
+          },
+          "403": {
+            "description": "Insufficient permission."
+          },
+          "404": {
+            "description": "Resource not found. The requested vehicle or command can not be found."
+          },
+          "408": {
+            "description": "Car is not available because the simulator is not connected."
+          }
+        }
+      }
+    }
+  },
+  "parameters": {
+    "vehicleIdParam": {
+      "name": "vehicleId",
+      "in": "path",
+      "description": "ID of vehicle to return.",
+      "required": true,
+      "type": "string",
+      "default": "1234567890ABCD1234"
+    },
+    "doorLockChangeRequestBody": {
+      "name": "body",
+      "description": "JSON object containing the command to lock or unlock the doors.",
+      "in": "body",
+      "required": true,
+      "schema": {
+        "$ref": "#/definitions/DoorLockChangeRequestBody"
+      }
+    }
+  },
+  "definitions": {
+    "ErrorResponse": {
+      "type": "object",
+      "properties": {
+        "reason": {
+          "description": "The error cause.",
+          "type": "string",
+          "example": "Token doesn't match with vehicle."
+        },
+        "code": {
+          "type": "string",
+          "description": "Status code",
+          "example": 400
+        }
+      }
+    },
+    "Vehicle": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "example": "77-9BO-_vTsH1LoEdu-_vZwpb_Oz4FO0Frkfskuw3uuKCFSSbeQ7Og3sOr3L815f"
+        },
+        "licenseplate": {
+          "type": "string",
+          "description": "The license plate of the vehicle.",
+          "example": "S-GG-116"
+        },
+        "finorvin": {
+          "type": "string",
+          "description": "The FIN or VIN of the vehicle.",
+          "example": "WDD***********002"
+        }
+      }
+    },
+    "Vehicles": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Vehicle"
+      }
+    },
+    "VehicleDetail": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "example": "77-9BO-_vTsH1LoEdu-_vZwpb_Oz4FO0Frkfskuw3uuKCFSSbeQ7Og3sOr3L815f"
+        },
+        "licenseplate": {
+          "type": "string",
+          "description": "The license plate of the vehicle.",
+          "example": "S-GG-116"
+        },
+        "salesdesignation": {
+          "type": "string",
+          "description": "The sales designation of the vehicle.",
+          "example": "Mercedes-AMG CLA 45 4MATIC Shooting Brake"
+        },
+        "finorvin": {
+          "type": "string",
+          "description": "The FIN or VIN of the vehicle.",
+          "example": "WDD***********002"
+        },
+        "modelyear": {
+          "type": "string",
+          "description": "The model year.",
+          "example": "2017"
+        },
+        "colorname": {
+          "type": "string",
+          "description": "The color name.",
+          "example": "mountaingrau metallic"
+        },
+        "fueltype": {
+          "type": "string",
+          "description": "The type of fuel.",
+          "example": "Benzin"
+        },
+        "powerhp": {
+          "description": "The power of the vehicle in HP unit.",
+          "type": "string",
+          "example": "381"
+        },
+        "powerkw": {
+          "description": "The power of the vehicle in KW unit.",
+          "type": "string",
+          "example": "280"
+        },
+        "numberofdoors": {
+          "description": "The number of doors the vehicle has.",
+          "type": "string",
+          "example": "5"
+        },
+        "numberofseats": {
+          "description": "The license plate of the vehicle.",
+          "type": "string",
+          "example": "5"
+        }
+      }
+    },
+    "TirePressureStatus": {
+      "type": "object",
+      "properties": {
+        "unit": {
+          "type": "string",
+          "example": "KILOPASCAL"
+        },
+        "value": {
+          "type": "number",
+          "format": "double",
+          "example": "0"
+        },
+        "retrievalstatus": {
+          "type": "string",
+          "example": "VALID",
+          "enum": [
+            "VALID",
+            "INITIALIZED",
+            "INVALID",
+            "NOT_SUPPORTED"
+          ]
+        },
+        "timestamp": {
+          "type": "number",
+          "format": "int64",
+          "example": "123456789"
+        }
+      }
+    },
+    "Tires": {
+      "type": "object",
+      "properties": {
+        "tirepressurefrontleft": {
+          "$ref": "#/definitions/TirePressureStatus"
+        },
+        "tirepressurefrontright": {
+          "$ref": "#/definitions/TirePressureStatus"
+        },
+        "tirepressurerearleft": {
+          "$ref": "#/definitions/TirePressureStatus"
+        },
+        "tirepressurerearright": {
+          "$ref": "#/definitions/TirePressureStatus"
+        }
+      }
+    },
+    "DoorOpenStatus": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "string",
+          "example": "OPEN",
+          "enum": [
+            "OPEN",
+            "CLOSED"
+          ]
+        },
+        "retrievalstatus": {
+          "type": "string",
+          "example": "VALID",
+          "enum": [
+            "VALID",
+            "INITIALIZED",
+            "INVALID",
+            "NOT_SUPPORTED"
+          ]
+        },
+        "timestamp": {
+          "type": "number",
+          "format": "int64",
+          "example": "123456789"
+        }
+      }
+    },
+    "DoorLockStatus": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "string",
+          "example": "UNLOCKED",
+          "enum": [
+            "LOCKED",
+            "UNLOCKED"
+          ]
+        },
+        "retrievalstatus": {
+          "type": "string",
+          "example": "VALID",
+          "enum": [
+            "VALID",
+            "INITIALIZED",
+            "INVALID",
+            "NOT_SUPPORTED"
+          ]
+        },
+        "timestamp": {
+          "type": "number",
+          "format": "int64",
+          "example": "123456789"
+        }
+      }
+    },
+    "Doors": {
+      "type": "object",
+      "properties": {
+        "doorstatusfrontleft": {
+          "$ref": "#/definitions/DoorOpenStatus"
+        },
+        "doorstatusfrontright": {
+          "$ref": "#/definitions/DoorOpenStatus"
+        },
+        "doorstatusrearleft": {
+          "$ref": "#/definitions/DoorOpenStatus"
+        },
+        "doorstatusrearright": {
+          "$ref": "#/definitions/DoorOpenStatus"
+        },
+        "doorlockstatusfrontleft": {
+          "$ref": "#/definitions/DoorLockStatus"
+        },
+        "doorlockstatusfrontright": {
+          "$ref": "#/definitions/DoorLockStatus"
+        },
+        "doorlockstatusrearleft": {
+          "$ref": "#/definitions/DoorLockStatus"
+        },
+        "doorlockstatusrearright": {
+          "$ref": "#/definitions/DoorLockStatus"
+        },
+        "doorlockstatusdecklid": {
+          "$ref": "#/definitions/DoorLockStatus"
+        },
+        "doorlockstatusgas": {
+          "$ref": "#/definitions/DoorLockStatus"
+        },
+        "doorlockstatusvehicle": {
+          "$ref": "#/definitions/DoorLockStatus"
+        }
+      }
+    },
+    "DoorLockChangeRequestBody": {
+      "description": "JSON object containing the command to lock or unlock the doors",
+      "required": [
+        "command"
+      ],
+      "properties": {
+        "command": {
+          "type": "string",
+          "example": "LOCK",
+          "description": "Command to lock or unlock the doors",
+          "enum": [
+            "LOCK",
+            "UNLOCK"
+          ]
+        }
+      }
+    },
+    "DoorLockChangedStatus": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "description": "The status of the door lock command.",
+          "example": "INITIATED",
+          "enum": [
+            "INITIATED",
+            "REJECTED"
+          ]
+        }
+      }
+    },
+    "LocationCoordinate": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "number",
+          "format": "double",
+          "example": 48.7078188
+        },
+        "retrievalstatus": {
+          "type": "string",
+          "example": "VALID",
+          "enum": [
+            "VALID",
+            "INITIALIZED",
+            "INVALID",
+            "NOT_SUPPORTED"
+          ]
+        },
+        "timestamp": {
+          "type": "number",
+          "format": "int64",
+          "example": "123456789"
+        }
+      }
+    },
+    "Location": {
+      "type": "object",
+      "properties": {
+        "latitude": {
+          "$ref": "#/definitions/LocationCoordinate"
+        },
+        "longitude": {
+          "$ref": "#/definitions/LocationCoordinate"
+        },
+        "heading": {
+          "$ref": "#/definitions/LocationCoordinate"
+        }
+      }
+    },
+    "DistanceDriven": {
+      "type": "object",
+      "properties": {
+        "unit": {
+          "type": "string",
+          "example": "KILOMETERS",
+          "enum": [
+            "KILOMETERS"
+          ]
+        },
+        "value": {
+          "type": "integer",
+          "example": "0"
+        },
+        "retrievalstatus": {
+          "type": "string",
+          "example": "VALID",
+          "enum": [
+            "VALID",
+            "INITIALIZED",
+            "INVALID",
+            "NOT_SUPPORTED"
+          ]
+        },
+        "timestamp": {
+          "type": "number",
+          "format": "int64",
+          "example": "123456789"
+        }
+      }
+    },
+    "DistanceDrivenResponse": {
+      "type": "object",
+      "properties": {
+        "odometer": {
+          "$ref": "#/definitions/DistanceDriven"
+        },
+        "distancesincereset": {
+          "$ref": "#/definitions/DistanceDriven"
+        },
+        "distancesincestart": {
+          "$ref": "#/definitions/DistanceDriven"
+        }
+      }
+    },
+    "FuelLevel": {
+      "type": "object",
+      "properties": {
+        "unit": {
+          "type": "string",
+          "example": "PERCENT",
+          "enum": [
+            "PERCENT"
+          ]
+        },
+        "value": {
+          "type": "integer",
+          "example": "0"
+        },
+        "retrievalstatus": {
+          "type": "string",
+          "example": "VALID",
+          "enum": [
+            "VALID",
+            "INITIALIZED",
+            "INVALID",
+            "NOT_SUPPORTED"
+          ]
+        },
+        "timestamp": {
+          "type": "number",
+          "format": "int64",
+          "example": "123456789"
+        }
+      }
+    },
+    "StateOfCharge": {
+      "type": "object",
+      "properties": {
+        "unit": {
+          "type": "string",
+          "example": "PERCENT",
+          "enum": [
+            "PERCENT"
+          ]
+        },
+        "value": {
+          "type": "integer",
+          "example": "0"
+        },
+        "retrievalstatus": {
+          "type": "string",
+          "example": "VALID",
+          "enum": [
+            "VALID",
+            "INITIALIZED",
+            "INVALID",
+            "NOT_SUPPORTED"
+          ]
+        },
+        "timestamp": {
+          "type": "number",
+          "format": "int64",
+          "example": "123456789"
+        }
+      }
+    }
+  }
+}

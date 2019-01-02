@@ -1,0 +1,73 @@
+<script type="text/javascript">
+    RED.nodes.registerType('MercedesMeRequest', {
+        category: 'MercedesMe',
+        defaults: {
+            name: { value: '' },
+            action: { value: '', required: true },
+            vehicleId: { value: '' },
+            command: { value: '' }
+        },
+        inputs: 1,
+        outputs: 1,
+        label: function () {
+            return this.name || this.action || 'request';
+        },
+        color: '#2392d8',
+        icon: 'bridge.png',
+        oneditprepare: function () {
+            let checkForVehicleId = () => {
+                let action = $('#node-input-action').val();
+
+                if (action === 'getAllVehicles') {
+                    $('#node-input-vehicleId').attr('disabled', true);
+                } else {
+                    $('#node-input-vehicleId').attr('disabled', false);
+                }
+            };
+
+            let checkForCommand = () => {
+                let action = $('#node-input-action').val();
+
+                if (action === 'postDoors') {
+                    $('#node-input-command').attr('disabled', false);
+                } else {
+                    $('#node-input-command').attr('disabled', true);
+                }
+            };
+            
+            $('#node-input-action')
+            .change(function () {
+                checkForVehicleId();
+                checkForCommand();
+            });
+        }
+    });
+</script>
+<script type="text/x-red" data-template-name="MercedesMeRequest">
+    <div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+        <input type="text" id="node-input-name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-action">Tag</label>
+        <select name="node-input-action" id="node-input-action">
+            <option value="getAllVehicles">getAllVehicles</option>
+            <option value="getVehicleById">getVehicleById</option>
+            <option value="getTiresStatus">getTiresStatus</option>
+            <option value="getDoorsStatus">getDoorsStatus</option>
+            <option value="postDoors">setDoors</option>
+            <option value="getLocation">getLocation</option>
+            <option value="getOdometerStatus">getOdometerStatus</option>
+            <option value="getFuelLevel">getFuelLevel</option>
+            <option value="getStateOfCharge">getStateOfCharge</option>
+        </select>
+    </div>
+    <div class="form-row">
+        <label for="node-input-vehicleId">Vehicle Id</label>
+        <input type="text" id="node-input-vehicleId">
+    </div>
+    <div class="form-row">
+        <label for="node-input-command">Command</label>
+        <input type="text" id="node-input-command">
+    </div>
+</script>

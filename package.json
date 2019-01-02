@@ -6,7 +6,8 @@
   "license": "MIT",
   "node-red": {
     "nodes": {
-      "mercedes-me-auth": "src/mercedes-me-auth.js"
+      "mercedes-me-auth": "src/mercedes-me-auth.js",
+      "mercedes-me-request": "src/mercedes-me-request.js"
     }
   },
   "dependencies": {
