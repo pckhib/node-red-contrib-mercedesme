@@ -2,7 +2,8 @@
     RED.nodes.registerType('MercedesMeOAuth2', {
         category: 'MercedesMe',
         defaults: {
-            name: { value: '' }
+            name: { value: '' },
+            callbackUrl: { value: '' }
         },
         inputs: 0,
         outputs: 1,
@@ -41,5 +42,9 @@
     <div class="form-row">
         <label for="node-input-client_secret">Client Secret</label>
         <input type="text" id="node-input-client_secret">
+    </div>
+    <div class="form-row">
+        <label for="node-input-callbackUrl">Callback Url (optional)</label>
+        <input type="text" id="node-input-callbackUrl">
     </div>
 </script>

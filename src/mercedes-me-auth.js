@@ -6,6 +6,7 @@ module.exports = function (RED) {
         RED.nodes.createNode(this, config);
 
         this.name = config.name;
+        this.callbackUrl = config.callbackUrl;
         this.client_id = this.credentials.client_id;
         this.client_secret = this.credentials.client_secret;
 
@@ -24,7 +25,7 @@ module.exports = function (RED) {
         node.getAuthorizationUrl = (protocol, hostname, port, client_id) => {
             node.status({ fill: 'yellow', shape: 'ring', text: 'authorizing...' });
 
-            let callbackUrl = protocol + '//' + hostname + (port ? ':' + port : '')
+            let callbackUrl = (node.callbackUrl != undefined) ? node.callbackUrl : protocol + '//' + hostname + (port ? ':' + port : '')
                 + '/mercedesme/oauth2/auth/callback';
 
             node.context().set('callback_url', callbackUrl);
