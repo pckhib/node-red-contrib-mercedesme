@@ -25,7 +25,7 @@ module.exports = function (RED) {
         node.getAuthorizationUrl = (protocol, hostname, port, client_id) => {
             node.status({ fill: 'yellow', shape: 'ring', text: 'authorizing...' });
 
-            let callbackUrl = (node.callbackUrl != undefined) ? node.callbackUrl : protocol + '//' + hostname + (port ? ':' + port : '')
+            let callbackUrl = (node.callbackUrl != undefined && node.callbackUrl != '') ? node.callbackUrl : protocol + '//' + hostname + (port ? ':' + port : '')
                 + '/mercedesme/oauth2/auth/callback';
 
             node.context().set('callback_url', callbackUrl);
