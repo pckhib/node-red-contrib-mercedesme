@@ -71,10 +71,14 @@ module.exports = function (RED) {
 
         node.refreshTokens = () => {
             let n = RED.nodes.getNode(id);
+            const encodedClientId = Buffer.from(n.client_id + ':' + n.client_secret).toString('base64');
             request.post({
-                headers: {'content-type' : 'application/x-www-form-urlencoded'},
+                headers: {
+                    'content-type' : 'application/x-www-form-urlencoded',
+                    'authorization': 'Basic ' + encodedClientId
+                },
                 url: auth.tokenHost + auth.tokenPath,
-                body: 'grant_type=refresh_token&client_secret=' + n.client_secret + '&refresh_token=' + n.tokens.refresh_token
+                body: 'grant_type=refresh_token&refresh_token=' + n.tokens.refresh_token
             }, (error, response, body) => {
                 if (error || response.statusCode != 200) {
                     return;
