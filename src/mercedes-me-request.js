@@ -1,5 +1,6 @@
 module.exports = function (RED) {
     const SwaggerClient = require('swagger-client');
+    const request = require('request');
     const fs = require('fs');
 
     function MercedesMeRequest(config) {
@@ -47,7 +48,21 @@ module.exports = function (RED) {
                 case 'getDoorsStatus':
                     return node.client.apis.Doors.getDoorsStatus({ vehicleId: node.vehicleId });
                 case 'postDoors':
-                    return node.client.apis.Doors.postDoors({ vehicleId: node.vehicleId, command: node.command });
+                    return new Promise((resolve, reject) => {
+                        request.post({
+                            headers: {
+                                'content-type' : 'application/json',
+                                'authorization': 'Bearer ' + node.context().get('access_token')
+                            },
+                            url: 'https://api.mercedes-benz.com/experimental/connectedvehicle/v1/vehicles/' + node.vehicleId + '/doors',
+                            body: '{ \"command\": \"' + node.command + '\"}'
+                        }, (error, response, body) => {
+                            if (error) {
+                                reject(error);
+                            }
+                            resolve({ data: body });
+                        });
+                    });
                 case 'getLocation':
                     return node.client.apis.Location.getLocation({ vehicleId: node.vehicleId });
                 case 'getOdometerStatus':
