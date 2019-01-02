@@ -2,6 +2,7 @@ module.exports = function (RED) {
     const SwaggerClient = require('swagger-client');
     const request = require('request');
     const fs = require('fs');
+    const path = require('path');
 
     function MercedesMeRequest(config) {
         RED.nodes.createNode(this, config);
@@ -11,7 +12,7 @@ module.exports = function (RED) {
         this.vehicleId = config.vehicleId;
         this.command = config.command;
 
-        const apiUrl = __dirname + '\\swagger_experimental_connected_vehicle_api_3.json';
+        const apiUrl = path.join(__dirname, 'swagger_experimental_connected_vehicle_api_3.json');
 
         this.status({ fill: 'red', shape: 'ring', text: 'wait for client' });
 
